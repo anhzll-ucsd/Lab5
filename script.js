@@ -144,8 +144,8 @@ img.addEventListener('load', () => {
 
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = 'black';
-  context.fillRect(0, 0, 400, 400);
-  var new_vals = getDimmensions(400, 400, img.width, img.height);
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  var new_vals = getDimmensions( canvas.width, canvas.height, img.width, img.height);
 
 
 
