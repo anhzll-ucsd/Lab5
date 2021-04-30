@@ -5,7 +5,11 @@ Angel Hernandez-Llamas
 
 ## Part 1:
 
-LINK TO YOUR PUBLISHED SITE
+https://anhzll-ucsd.github.io/Lab5/
+
+OR
+
+https://anhzll-ucsd.github.io/Lab5/index.html (sometimes it won't load index automatically)
 
 ## Part 2:
 
