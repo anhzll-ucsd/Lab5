@@ -1,11 +1,160 @@
 // script.js
 
 const img = new Image(); // used to load image from <input> and draw to canvas
+var synth = window.speechSynthesis;
+var inputElement = document.getElementById("image-input");
+inputElement.addEventListener("change", handleFiles, false);
+var voiceSelect = document.querySelector('select');
+
+var range = document.querySelector("[type='range']");
+var generate = document.querySelector("[type='submit']");
+var clear = document.querySelector("[type='reset']");
+var read = document.querySelector("[type='button']");
+var topText = document.getElementById("text-top").value;
+var bottText = document.getElementById("text-bottom").value;
+var slider = document.querySelector("[type='button']");
+var voices = [];
+var volume_level = 3;
+var icon = document.querySelector('#volume-group img');
+setTimeout(() => {
+  console.log(window.speechSynthesis.getVoices());
+}, 50);
+
+range.addEventListener("input", function(){
+  if (range.value > 66){
+    volume_level = range.value;
+   icon.src = "icons/volume-level-3.svg";
+  }
+
+  else if(range.value > 33){
+volume_level = range.value;
+icon.src = "icons/volume-level-2.svg";
+  }
+
+  else if(range.value > 0){
+volume_level = range.value;
+icon.src = "icons/volume-level-1.svg";
+  }
+
+  else if(range.value == 0){
+volume_level = range.value;
+icon.src = "icons/volume-level-0.svg";
+  }
+});
+
+function populateVoiceList() {
+  voiceSelect.disabled = false;
+  if(typeof speechSynthesis === 'undefined') {
+    return;
+  }
+
+  
+
+  speechSynthesis.addEventListener("voiceschanged", () => {
+    var voices = speechSynthesis.getVoices()
+  
+
+  for(var i = 0; i < voices.length; i++) {
+    var option = document.createElement('option');
+    option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
+
+    if(voices[i].default) {
+      option.textContent += ' -- DEFAULT';
+    }
+
+    option.setAttribute('data-lang', voices[i].lang);
+    option.setAttribute('data-name', voices[i].name);
+    voiceSelect.appendChild(option);
+  }
+});
+}
+
+populateVoiceList();
+clear.addEventListener("click", function(){
+  const canvas = document.getElementById('user-image');
+  const context = canvas.getContext('2d');
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  generate.disabled = false;
+  clear.disabled = true;
+  read.disabled = true;
+  document.getElementById("text-bottom").value = "";
+  document.getElementById("text-top").value = "";
+  document.getElementById("image-input").value = null;
+});
+
+
+read.addEventListener("click", function(){
+  var utterance = new SpeechSynthesisUtterance(document.getElementById("text-top").value + " " +  document.getElementById("text-bottom").value);
+  utterance.volume = volume_level/100;
+  console.log(voiceSelect.value.slice(-6, -1));
+  utterance.lang = voiceSelect.value.slice(-6, -1);
+  console.log(voiceSelect.value.slice(-6, -1));
+  synth.speak(utterance);
+ 
+});
+
+generate.addEventListener("click", function(event){
+  event.preventDefault();
+ 
+  w_canvas(document.getElementById('user-image').getContext('2d'), document.getElementById("text-top").value, document.getElementById("text-bottom").value);
+  
+  generate.disabled = true;
+  clear.disabled = false;
+  read.disabled = false;
+});
+
+
+function w_canvas(ctx, top, bott){
+ 
+
+  ctx.fillStyle = "Blue";
+  ctx.font  = "30pt Arial";
+  ctx.setAlign = "center";
+  //ctx.translate(200, 0);
+  if(top){
+  ctx.textAlign = "center";  
+  ctx.fillText(top.toUpperCase(), 200, 50);
+}
+  //ctx.translate(0,300);
+  if(bott){
+  ctx.textAlign = "center";  
+  ctx.fillText(bott.toUpperCase(), 200,375);}
+
+}
+
+
+function handleFiles(){
+  if(inputElement){
+    img.src = URL.createObjectURL(this.files[0]);
+    img.alt =  this.value.split("/").pop();
+  }
+}
+
+
 
 // Fires whenever the img object loads a new image (such as with img.src =)
 img.addEventListener('load', () => {
+  inputElement.addEventListener("change", handleFiles, false);
   // TODO
+  
+  console.log(img.src);
 
+  const canvas = document.getElementById('user-image');
+  const context = canvas.getContext('2d');
+
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = 'black';
+  context.fillRect(0, 0, 400, 400);
+  var new_vals = getDimmensions(400, 400, img.width, img.height);
+
+
+
+  context.drawImage(img,new_vals.startX,new_vals.startY,  new_vals.width,  new_vals.height);
+
+  
+  
+  //var clear = document.querySelector("[type='reset']");
+  //clear.removeAttribute('disabled');
   // Some helpful tips:
   // - Fill the whole Canvas with black first to add borders on non-square images, then draw on top
   // - Clear the form when a new image is selected
