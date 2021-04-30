@@ -13,4 +13,4 @@ https://anhzll-ucsd.github.io/Lab5/index.html (sometimes it won't load index aut
 
 ## Part 2:
 
-LINK TO YOUR PART 2 REPOSITORY
+https://github.com/anhzll-ucsd/github-actions-for-ci/issues/7
